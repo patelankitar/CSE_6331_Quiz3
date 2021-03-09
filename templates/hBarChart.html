@@ -1,0 +1,144 @@
+
+{% extends 'base.html' %} 
+   
+{% block title %} Horizontal Bar Chart  {% endblock %}
+    
+{% block styles %}
+    <style type="text/css">
+        axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        
+        .tick text {
+            font-family: sans-serif;
+            font-size: 13px;
+        }
+
+        .axisLabel {
+            font-family: Verdana, sans-serif;
+            font-size: 16px; 
+            text-anchor: middle;
+            fill: green;
+            
+        }
+    </style>	
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+{% endblock %}
+
+{% block content %}
+ 
+    <div id="barchartDiv"></div>
+    <svg width="900" height="700"></svg>
+    
+
+    <script>
+
+        var xLabel = {{ xAxisLabel|safe }};
+        var yLabel  = {{ yAxisLabel|safe }};
+        var chartTitle =  {{ chartLabel|safe }};
+
+        var svg = d3.select("svg"),
+            margin = 200,
+            width = 900 - margin,
+            height = 500 - margin;
+
+        svg.append("text")
+        .attr("transform", "translate(100,0)")
+        .attr("x", 50)
+        .attr("y", 50)
+        .attr("font-size", "24px")
+        .text(chartTitle);
+
+        var data = {{ graphData|safe }};
+
+        var xScale = d3.scaleLinear().range([0, width]),
+            yScale = d3.scaleBand().range([height, 0]);
+
+        var colorScales = d3.scaleOrdinal(d3.schemeCategory20b);
+        
+        var g = svg.append("g")
+                .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+        xScale.domain([0, d3.max(data, function(d) { return d.y; })]);
+        yScale.domain(data.map(function(d) { return d.x; })).padding(0.1);
+
+
+        g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale))
+        .append("text")
+        .attr("y", height - 250)
+        .attr("x", width - 250)
+        .attr("class", "axisLabel")
+        .text(xLabel);
+
+        g.append("g")
+        .call(d3.axisLeft(yScale).tickFormat(function(d){return d; })
+        .ticks(10))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", height - 400)
+        .attr("dy", "-2.1em")
+        .attr("class", "axisLabel")
+        .text(yLabel);
+
+
+        // var bars = g.selectAll(".bar")
+        // .data(data)
+        // .enter().append("rect")
+        // .attr("class", "bar")
+        // .attr("x", 0)
+        // .attr("height", yScale.bandwidth())
+        // .attr("y", function(d) { return yScale(d.x); })
+        // .attr("width", function(d) { return xScale(d.y); })
+        // .attr("fill", function(d){ return(colorScales(d.x)) });
+        
+
+        g.selectAll(".bar")
+        .append("text")
+        .text(function(d) { return d.y; })
+        .attr("x", 0)
+        .attr("y", function(d) { return xScale(d.y) + 10; })
+        .attr("font-family" , "sans-serif")
+        .attr("font-size" , "44px")
+        .attr("fill" , "black")
+
+       
+
+
+        var bars =  g.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g");
+
+        bars.append("rect")
+        .attr("class", "bar")
+        .attr("x", 0)
+        .attr("y", function(d) { return yScale(d.x); })
+        .attr("height", yScale.bandwidth())
+        .attr("width", function(d) { return xScale(d.y); })
+        .attr("fill", function(d){ return(colorScales(d.x)) });
+
+        bars.append("text")
+        .text(function(d) { return d.y; })
+        .attr("x", function(d) { return  xScale(d.y) + 10 ; })
+        .attr("y", function(d) { return yScale(d.x) + yScale.bandwidth() / 2 + 5 ; })
+        //.attr("dy", ".35em")
+        .attr("font-family" , "sans-serif")
+        .attr("font-size" , "14px")
+        .attr("fill" , "black")
+        .attr("text-anchor", "middle");
+
+        
+    </script>
+{% endblock %}

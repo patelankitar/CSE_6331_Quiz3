@@ -1,0 +1,106 @@
+
+{% extends 'base.html' %} 
+   
+{% block title %} Line Chart  {% endblock %}
+    
+{% block styles %}
+    <style type="text/css">
+        axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        
+        .tick text {
+            font-family: sans-serif;
+            font-size: 13px;
+        }
+
+        .axisLabel {
+            font-family: Verdana, sans-serif;
+            font-size: 16px; 
+            text-anchor: middle;
+            fill: green;
+            
+        }
+    </style>	
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+{% endblock %}
+
+{% block content %}
+ 
+    <div id="barchartDiv"></div>
+    <svg width="900" height="500"></svg>
+    
+
+    <script>
+
+        var xLabel = {{ xAxisLabel|safe }};
+        var yLabel  = {{ yAxisLabel|safe }};
+        var chartTitle =  {{ chartLabel|safe }};
+
+        var svg = d3.select("svg"),
+            margin = 200,
+            width = 900 - margin,
+            height = 500 - margin;
+
+        svg.append("text")
+        .attr("transform", "translate(100,0)")
+        .attr("x", 50)
+        .attr("y", 50)
+        .attr("font-size", "24px")
+        .text(chartTitle);
+
+        var data = {{ graphData|safe }};
+
+        var xScale = d3.scaleLinear().range([0, width]),
+            yScale = d3.scaleLinear().range([height, 0]);
+
+        var colorScale = d3.scaleOrdinal(d3.schemeCategory20b);
+        
+        var g = svg.append("g")
+                .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+             
+        xScale.domain(d3.extent(data, function(d) { return d.x; }));
+        yScale.domain([0, d3.max(data, function(d) { return d.y; })]);
+        
+        g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale))
+        .append("text")
+        .attr("y", height - 250)
+        .attr("x", width - 250) 
+        .attr("class", "axisLabel")
+        .text(xLabel);
+
+        g.append("g")
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", height - 400)
+        .attr("dy", "-2.1em")
+        .attr("class", "axisLabel")
+        .text(yLabel);
+        
+        g.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
+             .defined(d => !isNaN(d.y))
+             .x(function(d) { return xScale(d.x) })
+             .y(function(d) { return yScale(d.y) })
+             );
+
+    </script>
+{% endblock %}

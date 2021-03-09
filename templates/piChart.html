@@ -1,0 +1,107 @@
+{% extends 'base.html' %} 
+   
+{% block title %} Pi Chart  {% endblock %}
+    
+{% block scripts %}
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div id="piChartDiv"></div>
+  <script>
+
+    var width = 900
+    height = 600
+    margin = 40
+
+    var radius = Math.min(width, height) / 2 - margin
+
+    var svg = d3.select("#piChartDiv")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    
+    var myChartData = {{ graphData }}
+    console.log(myChartData)
+   
+    var chartTitle =  {{ chartLabel|safe }}
+
+    var colorScales = d3.scaleOrdinal(d3.schemeCategory20b);
+  
+    var pie = d3.pie()
+      .value(function (d) { return d.value; })
+
+    var data_ready = pie(d3.entries(myChartData))
+    console.log("data_ready =")
+    console.log(data_ready)
+
+    var arcGenerator = d3.arc()
+      .innerRadius(0)
+      .outerRadius(radius)
+
+    svg.append("text")
+        .attr("transform", "translate(-200,300)")
+        //.attr("x", 0)
+        //.attr("y", -220)
+        .attr("font-size", "24px")
+        .text(chartTitle)
+
+    svg
+      .selectAll('mySlices')
+      .data(data_ready)
+      .enter()
+      .append('path')
+      .attr('d', d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius)
+      )
+      .attr('fill', function (d) { return (colorScales(d.data.key)) })
+      .attr("stroke", "black")
+      .style("stroke-width", "2px")
+      .style("opacity", 0.5)
+    
+    svg
+    .selectAll('mySlices')
+    .data(data_ready)
+    .enter()
+    .append('text')
+    .text(function(d){ return d.data.value})
+    .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+    .style("text-anchor", "middle")
+    .style("font-size", 17)
+
+     // Add one dot in the legend for each name.
+     var size = 20
+        svg.append("g")
+        .attr("transform", "translate(100 ,-200)")
+        .selectAll("mydots")
+        .data(data_ready)
+        .enter()
+        .append("rect")
+            .attr("x", 250)
+            .attr("y", function(d,i){ return 100 + i*(size+5)  }) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("width", size)
+            .attr("height", size)
+            .attr('fill', function (d) { return (colorScales(d.data.key)) })
+
+        // Add one dot in the legend for each name.
+        svg.append("g")
+        .attr("transform", "translate(100 ,-200)")
+        .selectAll("mylabels")
+        .data(data_ready)
+        .enter()
+        .append("text")
+            .attr("x", 250 + size*1.2)
+            .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)  }) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr('fill', function (d) { return (colorScales(d.data.key)) })
+            .text(function(d){ return " "+ d.data.key})
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle");
+
+  </script>
+   
+{% endblock %}
