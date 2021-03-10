@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block scripts %}
+
+{% endblock %}
+
+
+{% block title %} Quiz3-Q3   {% endblock %}
+
+{% block content %}
+    <h1>Quiz3-Q3</h1>
+
+    <form id="q3" action="/q3" method="POST">
+        <table>
+            <tr>
+                <td>
+                    Enter ----- (Year) : 
+                </td>
+                <td>
+                    <input type="number" name="col1" id="col1">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Enter ----- (State) : 
+                </td>
+                <td>
+                    <input type="text" name="col2" id="col2">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" name="search" id="search" value="Submit">
+                </td>
+            </tr>
+        </table>
+{% endblock %}

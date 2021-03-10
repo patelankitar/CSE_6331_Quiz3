@@ -38,7 +38,7 @@
 {% block content %}
  
     <div id="barchartDiv"></div>
-    <svg width="900" height="500"></svg>
+    <svg width="900" height="600"></svg>
     
 
     <script>
@@ -75,19 +75,28 @@
         g.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(xScale))
+        .selectAll("text")	
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", function(d) {
+                return "rotate(-65)" 
+                })
         .append("text")
         .attr("y", height - 250)
         .attr("x", width - 250)
         .attr("class", "axisLabel")
-        .text(xLabel);
+        .text(xLabel)
+        
 
         g.append("g")
         .call(d3.axisLeft(yScale).tickFormat(function(d){return d; })
-        .ticks(10))
+        .ticks(5))
         .append("text")
         .attr("transform", "rotate(-90)")
+        .attr("font-size" , "34px")
         .attr("x", height - 400)
-        .attr("dy", "-2.1em")
+        .attr("dy", "-4.1em")
         .attr("class", "axisLabel")
         .text(yLabel);
 
@@ -114,9 +123,7 @@
         .attr("font-family" , "sans-serif")
         .attr("font-size" , "14px")
         .attr("fill" , "black")
-        .attr("text-anchor", "middle");
-
-
-
+        .attr("text-anchor", "middle")
+        
     </script>
 {% endblock %}
