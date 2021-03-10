@@ -47,11 +47,6 @@ def index():
     else:
         return render_template('index.html')
 
-# Q1  cursor.execute("SELECT candidate, party_detailed , candidatevotes FROM [dbo].[presidentialelect] where year = "+ yearValue + " and state_po = '" + stateValue +"'")
-# Q2 cursor.execute("SELECT [state], candidate,  party_detailed , candidatevotes FROM [dbo].[presidentialelect]  where year >= "+ yearFromValue+" and year <=  "+ yearToValue+" and candidatevotes >= "+ voteFrom +" and candidatevotes<= "+voteTo)
-# sql = "SELECT year, SUM(CAST(candidatevotes AS BIGINT)) as vote_count  FROM [dbo].[presidentialelect]  where candidate like  '% " + name + " %' GROUP by  year order by year"
-                   
-
 @app.route("/q1", methods=['POST', 'GET'])
 def q1():
     if request.method == 'POST':
@@ -64,7 +59,7 @@ def q1():
             return render_template('q1.html',errorMessage=errormessage)
         else:
             #sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
-            sql = "SELECT  top 6 party_detailed , ROUND(CAST((candidatevotes * 100.0 / totalVotes) AS FLOAT), 2) AS Percentage1   FROM [dbo].[presidentialelect] where year = " + col1Value + " and state_po = '" + col2Value +"' "
+            sql = "SELECT  top 6 party_detailed , ROUND(CAST((candidatevotes * 100.0 / totalVotes) AS FLOAT), 2) AS Percentage1   FROM [dbo].[presidentialelect] where year = " + col1Value + " and state_po = '" + col2Value +"' ORDER BY Percentage1 desc "
             cursor.execute(sql)
             
             df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
@@ -154,7 +149,7 @@ def q3():
             errormessage = "Please enter valid input"
             return render_template('q3.html',errorMessage=errormessage)
         else:
-            sql = "SELECT candidate, sum(candidatevotes)  FROM [dbo].[presidentialelect]  where year >= " + yearStartValue + " and year <=  " + yearEndValue + " AND state_po in ('"+stateValue+"') GROUP BY candidate,Year"
+            sql = "SELECT candidate, CONVERT(varchar(10), [year])  FROM [dbo].[presidentialelect]  where year >= " + yearStartValue + " and year <=  " + yearEndValue + " AND state_po in ('"+stateValue+"') GROUP BY candidate,Year"
             cursor.execute(sql)
             
             df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
@@ -173,7 +168,7 @@ def q3():
 
                 # print (json.dumps(d))
                 
-                xAxisLabel = "Sum of candicate vote for year"
+                xAxisLabel = "Year"
                 yAxisLabel = "Candidate"
                 chartLabel = "Candidate per Year"
         
