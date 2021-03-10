@@ -67,7 +67,7 @@ def barChart():
         d= [{"x": 4.18, "y": 1.0}, {"x": 4.2, "y": 2.0}, {"x": 4.3, "y": 3.0}, {"x": 4.32, "y": 3.0}, {"x": 4.34, "y": 1.0}, {"x": 4.38, "y": 5.0}, {"x": 4.39, "y": 1.0}, {"x": 4.4, "y": 10.0}, {"x": 4.5, "y": 8.0}, {"x": 4.6, "y": 7.0}, {"x": 4.7, "y": 3.0}, {"x": 4.8, "y": 7.0}, {"x": 4.9, "y": 6.0}, {"x": 4.99, "y": 1.0}]
         xAxisLabel = "Magnitude"
         yAxisLabel = "# of earthquake"
-        chartLabel = "Number of Earthquake for magnitude"
+        chartLabel = "I changed this text to Test"
         return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
 
 @app.route("/hBarChart", methods=['POST', 'GET'])
