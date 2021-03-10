@@ -144,15 +144,17 @@ def q2():
 @app.route("/q3", methods=['POST', 'GET'])
 def q3():
     if request.method == 'POST':
-        col1Value  = request.form['col1']
-        col2Value  = request.form['col2']  
+        yearStartValue  = request.form['yearStart']
+        yearEndValue  = request.form['yearEnd']  
+        stateValue  = request.form['state'] 
+
         errormessage = ""
 
-        if (col1Value == "" or col2Value == ""):
+        if (yearStartValue == "" or yearEndValue == "" or stateValue==""):
             errormessage = "Please enter valid input"
             return render_template('q3.html',errorMessage=errormessage)
         else:
-            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            sql = "SELECT candidate, sum(candidatevotes)  FROM [dbo].[presidentialelect]  where year >= " + yearStartValue + " and year <=  " + yearEndValue + " AND state_po in ('"+stateValue+"') GROUP BY candidate,Year"
             cursor.execute(sql)
             
             df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
@@ -171,15 +173,15 @@ def q3():
 
                 # print (json.dumps(d))
                 
-                xAxisLabel = "Candidate"
-                yAxisLabel = "# of Votes"
-                chartLabel = "Number of Votes per Candidate"
+                xAxisLabel = "Sum of candicate vote for year"
+                yAxisLabel = "Candidate"
+                chartLabel = "Candidate per Year"
         
                 #chartType = request.form['chartSelect']
                 #print(chartType)
                 #if(chartType=="pi"):
 
-                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
+                return render_template('hBarChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q3.html')
 

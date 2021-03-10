@@ -38,7 +38,7 @@
 {% block content %}
  
     <div id="barchartDiv"></div>
-    <svg width="900" height="700"></svg>
+    <svg width="1100" height="700"></svg>
     
 
     <script>
@@ -49,7 +49,7 @@
 
         var svg = d3.select("svg"),
             margin = 200,
-            width = 900 - margin,
+            width = 1100 - margin,
             height = 500 - margin;
 
         svg.append("text")
@@ -61,13 +61,13 @@
 
         var data = {{ graphData|safe }};
 
-        var xScale = d3.scaleLinear().range([0, width]),
+        var xScale = d3.scaleLinear().range([0, width-50]),
             yScale = d3.scaleBand().range([height, 0]);
 
         var colorScales = d3.scaleOrdinal(d3.schemeCategory20b);
         
         var g = svg.append("g")
-                .attr("transform", "translate(" + 100 + "," + 100 + ")");
+                .attr("transform", "translate(" + 200 + "," + 100 + ")");
 
         xScale.domain([0, d3.max(data, function(d) { return d.y; })]);
         yScale.domain(data.map(function(d) { return d.x; })).padding(0.1);
@@ -90,7 +90,7 @@
         .attr("x", height - 400)
         .attr("dy", "-2.1em")
         .attr("class", "axisLabel")
-        .text(yLabel);
+        //.text(yLabel);
 
 
         // var bars = g.selectAll(".bar")
@@ -112,9 +112,6 @@
         .attr("font-family" , "sans-serif")
         .attr("font-size" , "44px")
         .attr("fill" , "black")
-
-       
-
 
         var bars =  g.selectAll(".bar")
             .data(data)
