@@ -73,6 +73,13 @@ def q1():
         xAxisLabel = "Candidate"
         yAxisLabel = "# of Votes"
         chartLabel = "Number of Votes per Candidate"
+   
+        chartType = request.form['chartSelect']
+        
+        print(chartType)
+        
+        #if(chartType=="pi"):
+
         return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q1.html')
