@@ -85,7 +85,7 @@ def q1():
                 
                 xAxisLabel = "Candidate"
                 yAxisLabel = "# of Votes"
-                chartLabel = "Number of Votes per Candidate"
+                chartLabel = "% Votes for each party"
         
                 chartType = request.form['chartSelect']
                 print(chartType)
@@ -99,15 +99,17 @@ def q1():
 @app.route("/q2", methods=['POST', 'GET'])
 def q2():
     if request.method == 'POST':
-        col1Value  = request.form['col1']
-        col2Value  = request.form['col2']  
+        yearStartValue  = request.form['yearStart']
+        yearEndValue  = request.form['yearEnd']  
+        stateValue  = request.form['state']  
+        
         errormessage = ""
 
-        if (col1Value == "" or col2Value == ""):
+        if (yearStartValue == "" or yearEndValue == "" or stateValue==""):
             errormessage = "Please enter valid input"
             return render_template('q2.html',errorMessage=errormessage)
         else:
-            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            sql = "SELECT CONVERT(varchar(10), [year]), totalVotes FROM [dbo].[presidentialelect]  where year >= " + yearStartValue + " and year <=  " + yearEndValue + " AND state_po in ('"+stateValue+"')"
             cursor.execute(sql)
             
             df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
@@ -124,17 +126,17 @@ def q2():
                     for row in df.values
                 ]
 
-                # print (json.dumps(d))
+                #print (json.dumps(d))
                 
-                xAxisLabel = "Candidate"
-                yAxisLabel = "# of Votes"
-                chartLabel = "Number of Votes per Candidate"
+                xAxisLabel = "Year"
+                yAxisLabel = "Total Votes"
+                chartLabel = "Total Votes per Year"
         
                 #chartType = request.form['chartSelect']
                 #print(chartType)
                 #if(chartType=="pi"):
 
-                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
+                return render_template('scatterChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q2.html')
 
