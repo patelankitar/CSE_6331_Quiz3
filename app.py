@@ -104,7 +104,7 @@ def q2():
             errormessage = "Please enter valid input"
             return render_template('q2.html',errorMessage=errormessage)
         else:
-            sql = "SELECT CONVERT(varchar(10), [year]), totalVotes FROM [dbo].[presidentialelect]  where year >= " + yearStartValue + " and year <=  " + yearEndValue + " AND state_po in ('"+stateValue+"')"
+            sql = "SELECT distinct CONVERT(varchar(10), [year]), totalVotes FROM [dbo].[presidentialelect]  where year >= " + yearStartValue + " and year <=  " + yearEndValue + " AND state_po in ('"+stateValue+"')"
             cursor.execute(sql)
             
             df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
