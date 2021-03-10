@@ -14,6 +14,15 @@
         <table>
             <tr>
                 <td>
+                    <label style="color: red;">{{ errorMessage }}</label>
+
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <td>
                     Enter ----- (Year) : 
                 </td>
                 <td>
@@ -34,8 +43,9 @@
                  </td>
                  <td style="width: 250px;">
                      <select name="chartSelect" id="chartSelect" style="width: 200px;">
-                         <option value="pi">Pi-Chart</option>
-                         <!-- <option value="line">Line Chart</option>
+                        <option value="vBar">Vertical Bar Chart</option>
+                         <!--<option value="pi">Pi-Chart</option>
+                         <option value="line">Line Chart</option>
                          <option value="hBar">Horizontal Bar Chart</option>
                          <option value="vBar">Vertical Bar  Chart</option>
                          <option value="point">Scattered (Point) Chart</option> -->

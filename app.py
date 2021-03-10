@@ -47,40 +47,50 @@ def index():
     else:
         return render_template('index.html')
 
+# Q1  cursor.execute("SELECT candidate, party_detailed , candidatevotes FROM [dbo].[presidentialelect] where year = "+ yearValue + " and state_po = '" + stateValue +"'")
+# Q2 cursor.execute("SELECT [state], candidate,  party_detailed , candidatevotes FROM [dbo].[presidentialelect]  where year >= "+ yearFromValue+" and year <=  "+ yearToValue+" and candidatevotes >= "+ voteFrom +" and candidatevotes<= "+voteTo)
+# sql = "SELECT year, SUM(CAST(candidatevotes AS BIGINT)) as vote_count  FROM [dbo].[presidentialelect]  where candidate like  '% " + name + " %' GROUP by  year order by year"
+                   
 
 @app.route("/q1", methods=['POST', 'GET'])
 def q1():
     if request.method == 'POST':
         col1Value  = request.form['col1']
         col2Value  = request.form['col2']  
+        errormessage = ""
 
-        sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
-        
-        cursor.execute(sql)
-        df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
-        d = [
-            dict([
-                (colname, row[i])
-                for i,colname in enumerate(df.columns)
-            ])
-            for row in df.values
-        ]
+        if (col1Value == "" or col2Value == ""):
+            errormessage = "Please enter valid input"
+            return render_template('q1.html',errorMessage=errormessage)
+        else:
+            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            cursor.execute(sql)
+            
+            df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
 
-        # print (json.dumps(d))
-        #d= [{"x": "ak", "y": 2}, {"x": "nc", "y": 1}, {"x": "ok", "y": 1}, {"x": "pr", "y": 1}, {"x": "us", "y": 90}]
-        #d= [{"x": 4.18, "y": 1.0}, {"x": 4.2, "y": 2.0}, {"x": 4.3, "y": 3.0}, {"x": 4.32, "y": 3.0}, {"x": 4.34, "y": 1.0}, {"x": 4.38, "y": 5.0}, {"x": 4.39, "y": 1.0}, {"x": 4.4, "y": 10.0}, {"x": 4.5, "y": 8.0}, {"x": 4.6, "y": 7.0}, {"x": 4.7, "y": 3.0}, {"x": 4.8, "y": 7.0}, {"x": 4.9, "y": 6.0}, {"x": 4.99, "y": 1.0}]
-        
-        xAxisLabel = "Candidate"
-        yAxisLabel = "# of Votes"
-        chartLabel = "Number of Votes per Candidate"
-   
-        chartType = request.form['chartSelect']
-        
-        print(chartType)
-        
-        #if(chartType=="pi"):
+            if(len(df) <= 0):
+                errormessage = "No results found"
+                return render_template('q1.html',errorMessage=errormessage)
+            else:
+                d = [
+                    dict([
+                        (colname, row[i])
+                        for i,colname in enumerate(df.columns)
+                    ])
+                    for row in df.values
+                ]
 
-        return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
+                # print (json.dumps(d))
+                
+                xAxisLabel = "Candidate"
+                yAxisLabel = "# of Votes"
+                chartLabel = "Number of Votes per Candidate"
+        
+                chartType = request.form['chartSelect']
+                print(chartType)
+                #if(chartType=="pi"):
+
+                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q1.html')
 
@@ -88,7 +98,42 @@ def q1():
 @app.route("/q2", methods=['POST', 'GET'])
 def q2():
     if request.method == 'POST':
-        return render_template('q2.html')
+        col1Value  = request.form['col1']
+        col2Value  = request.form['col2']  
+        errormessage = ""
+
+        if (col1Value == "" or col2Value == ""):
+            errormessage = "Please enter valid input"
+            return render_template('q1.html',errorMessage=errormessage)
+        else:
+            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            cursor.execute(sql)
+            
+            df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
+
+            if(len(df) <= 0):
+                errormessage = "No results found"
+                return render_template('q1.html',errorMessage=errormessage)
+            else:
+                d = [
+                    dict([
+                        (colname, row[i])
+                        for i,colname in enumerate(df.columns)
+                    ])
+                    for row in df.values
+                ]
+
+                # print (json.dumps(d))
+                
+                xAxisLabel = "Candidate"
+                yAxisLabel = "# of Votes"
+                chartLabel = "Number of Votes per Candidate"
+        
+                #chartType = request.form['chartSelect']
+                #print(chartType)
+                #if(chartType=="pi"):
+
+                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q2.html')
 
@@ -96,7 +141,42 @@ def q2():
 @app.route("/q3", methods=['POST', 'GET'])
 def q3():
     if request.method == 'POST':
-        return render_template('q3.html')
+        col1Value  = request.form['col1']
+        col2Value  = request.form['col2']  
+        errormessage = ""
+
+        if (col1Value == "" or col2Value == ""):
+            errormessage = "Please enter valid input"
+            return render_template('q1.html',errorMessage=errormessage)
+        else:
+            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            cursor.execute(sql)
+            
+            df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
+
+            if(len(df) <= 0):
+                errormessage = "No results found"
+                return render_template('q1.html',errorMessage=errormessage)
+            else:
+                d = [
+                    dict([
+                        (colname, row[i])
+                        for i,colname in enumerate(df.columns)
+                    ])
+                    for row in df.values
+                ]
+
+                # print (json.dumps(d))
+                
+                xAxisLabel = "Candidate"
+                yAxisLabel = "# of Votes"
+                chartLabel = "Number of Votes per Candidate"
+        
+                #chartType = request.form['chartSelect']
+                #print(chartType)
+                #if(chartType=="pi"):
+
+                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q3.html')
 
@@ -104,7 +184,42 @@ def q3():
 @app.route("/q4", methods=['POST', 'GET'])
 def q4():
     if request.method == 'POST':
-        return render_template('q4.html')
+        col1Value  = request.form['col1']
+        col2Value  = request.form['col2']  
+        errormessage = ""
+
+        if (col1Value == "" or col2Value == ""):
+            errormessage = "Please enter valid input"
+            return render_template('q1.html',errorMessage=errormessage)
+        else:
+            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            cursor.execute(sql)
+            
+            df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
+
+            if(len(df) <= 0):
+                errormessage = "No results found"
+                return render_template('q1.html',errorMessage=errormessage)
+            else:
+                d = [
+                    dict([
+                        (colname, row[i])
+                        for i,colname in enumerate(df.columns)
+                    ])
+                    for row in df.values
+                ]
+
+                # print (json.dumps(d))
+                
+                xAxisLabel = "Candidate"
+                yAxisLabel = "# of Votes"
+                chartLabel = "Number of Votes per Candidate"
+        
+                #chartType = request.form['chartSelect']
+                #print(chartType)
+                #if(chartType=="pi"):
+
+                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q4.html')
 
@@ -114,27 +229,40 @@ def q5():
     if request.method == 'POST':
         col1Value  = request.form['col1']
         col2Value  = request.form['col2']  
+        errormessage = ""
 
-        sql = "SELECT  party_simplified,  ROUND(CAST((sum(candidatevotes) * 100.0 / totalVotes) AS FLOAT), 2) AS [Percentage] FROM [dbo].[presidentialelect] WHERE year = " + col1Value + " AND state_po in ('" + col2Value + "') GROUP by party_simplified ,totalVotes"
-        
-        cursor.execute(sql)
-        df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
-        d = [
-            dict([
-                (colname, row[i])
-                for i,colname in enumerate(df.columns)
-            ])
-            for row in df.values
-        ]
+        if (col1Value == "" or col2Value == ""):
+            errormessage = "Please enter valid input"
+            return render_template('q1.html',errorMessage=errormessage)
+        else:
+            sql = "SELECT  party_simplified,  ROUND(CAST((sum(candidatevotes) * 100.0 / totalVotes) AS FLOAT), 2) AS [Percentage] FROM [dbo].[presidentialelect] WHERE year = " + col1Value + " AND state_po in ('" + col2Value + "') GROUP by party_simplified ,totalVotes"
+            cursor.execute(sql)
+            
+            df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
 
-        # print (json.dumps(d))
-        #d= [{"x": "ak", "y": 2}, {"x": "nc", "y": 1}, {"x": "ok", "y": 1}, {"x": "pr", "y": 1}, {"x": "us", "y": 90}]
-        #d= [{"x": 4.18, "y": 1.0}, {"x": 4.2, "y": 2.0}, {"x": 4.3, "y": 3.0}, {"x": 4.32, "y": 3.0}, {"x": 4.34, "y": 1.0}, {"x": 4.38, "y": 5.0}, {"x": 4.39, "y": 1.0}, {"x": 4.4, "y": 10.0}, {"x": 4.5, "y": 8.0}, {"x": 4.6, "y": 7.0}, {"x": 4.7, "y": 3.0}, {"x": 4.8, "y": 7.0}, {"x": 4.9, "y": 6.0}, {"x": 4.99, "y": 1.0}]
+            if(len(df) <= 0):
+                errormessage = "No results found"
+                return render_template('q1.html',errorMessage=errormessage)
+            else:
+                d = [
+                    dict([
+                        (colname, row[i])
+                        for i,colname in enumerate(df.columns)
+                    ])
+                    for row in df.values
+                ]
+
+                # print (json.dumps(d))
+                
+                xAxisLabel = "Candidate"
+                yAxisLabel = "# of Votes"
+                chartLabel = "Number of Votes per Candidate"
         
-        xAxisLabel = "Candidate"
-        yAxisLabel = "# of Votes"
-        chartLabel = "Number of Votes per Party in Year " + str(col1Value)
-        return render_template('piChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
+                #chartType = request.form['chartSelect']
+                #print(chartType)
+                #if(chartType=="pi"):
+                
+                return render_template('piChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q5.html')
 
