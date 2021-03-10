@@ -108,10 +108,15 @@ def piChart():
         # print(dict_data)
         # chart_data = dict_data
         
-        chart_data = {4.18: 1.0, 4.2: 94.0, 4.3: 106.0, 4.34: 1.0, 4.38: 1.0, 4.39: 1.0, 4.4: 120.0}
         chartLabel = "Number of Earthquake for magnitude"
-        return render_template("piChart.html", graphData = chart_data, chartLabel=json.dumps(chartLabel))
+        
+        #chart_data = {4.18: 100.0, 4.2: 94.0, 4.3: 106.0, 4.34: 102.0}
+        #return render_template("piChart.html", graphData = chart_data, chartLabel=json.dumps(chartLabel))
 
+        d= [{"x": "AL", "y": "46"}, {"x": "OK", "y": "10"}, {"x": "TX", "y": "70"}, {"x": "PA", "y": "50"}]
+        return render_template('piChart.html', graphData = (json.dumps(d)),chartLabel=json.dumps(chartLabel))
+
+        
 @app.route("/lineChart", methods=['POST', 'GET'])
 def lineChart():
         # cursor.execute("select mag, count(mag) as mag_count  from [dbo].[earthquakeMonthData] where mag > 4.0 and mag < 5.0 group by mag ")
