@@ -67,7 +67,7 @@
             .attr("transform", function(d) { 
                     return "translate(" + label.centroid(d) + ")"; 
             })
-            .text(function(d) { return d.data.x; });
+            .text(function(d) { return d.data.y + "%"; });
     
      // Add one rect in the legend for each name.
      var size = 20
@@ -93,7 +93,7 @@
           .attr("x", 250 + size*1.2)
           .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)  }) // 100 is where the first dot appears. 25 is the distance between dots
           .attr('fill', function (d) { return (colorScales(d.x)) })
-          .text(function(d){ return  d.y})
+          .text(function(d){ return  d.x})
           .attr("text-anchor", "left")
           .style("alignment-baseline", "middle");
 

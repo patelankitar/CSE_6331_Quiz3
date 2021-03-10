@@ -63,7 +63,8 @@ def q1():
             errormessage = "Please enter valid input"
             return render_template('q1.html',errorMessage=errormessage)
         else:
-            sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            #sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
+            sql = "SELECT  top 6 party_detailed , ROUND(CAST((candidatevotes * 100.0 / totalVotes) AS FLOAT), 2) AS Percentage1   FROM [dbo].[presidentialelect] where year = " + col1Value + " and state_po = '" + col2Value +"' "
             cursor.execute(sql)
             
             df = pd.DataFrame.from_records(cursor.fetchall(), columns =list('xy'))
@@ -90,7 +91,7 @@ def q1():
                 print(chartType)
                 #if(chartType=="pi"):
 
-                return render_template('barChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
+                return render_template('piChart.html', graphData = (json.dumps(d)), xAxisLabel=json.dumps(xAxisLabel),yAxisLabel=json.dumps(yAxisLabel),chartLabel=json.dumps(chartLabel))
     else:
         return render_template('q1.html')
 
@@ -104,7 +105,7 @@ def q2():
 
         if (col1Value == "" or col2Value == ""):
             errormessage = "Please enter valid input"
-            return render_template('q1.html',errorMessage=errormessage)
+            return render_template('q2.html',errorMessage=errormessage)
         else:
             sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
             cursor.execute(sql)
@@ -113,7 +114,7 @@ def q2():
 
             if(len(df) <= 0):
                 errormessage = "No results found"
-                return render_template('q1.html',errorMessage=errormessage)
+                return render_template('q2.html',errorMessage=errormessage)
             else:
                 d = [
                     dict([
@@ -147,7 +148,7 @@ def q3():
 
         if (col1Value == "" or col2Value == ""):
             errormessage = "Please enter valid input"
-            return render_template('q1.html',errorMessage=errormessage)
+            return render_template('q3.html',errorMessage=errormessage)
         else:
             sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
             cursor.execute(sql)
@@ -156,7 +157,7 @@ def q3():
 
             if(len(df) <= 0):
                 errormessage = "No results found"
-                return render_template('q1.html',errorMessage=errormessage)
+                return render_template('q3.html',errorMessage=errormessage)
             else:
                 d = [
                     dict([
@@ -190,7 +191,7 @@ def q4():
 
         if (col1Value == "" or col2Value == ""):
             errormessage = "Please enter valid input"
-            return render_template('q1.html',errorMessage=errormessage)
+            return render_template('q4.html',errorMessage=errormessage)
         else:
             sql = "SELECT party_detailed,  sum(candidatevotes) FROM [dbo].[presidentialelect] where year = "+ col1Value +" and state_po = '"+ col2Value +"'  group by party_detailed"
             cursor.execute(sql)
@@ -199,7 +200,7 @@ def q4():
 
             if(len(df) <= 0):
                 errormessage = "No results found"
-                return render_template('q1.html',errorMessage=errormessage)
+                return render_template('q4.html',errorMessage=errormessage)
             else:
                 d = [
                     dict([
@@ -233,7 +234,7 @@ def q5():
 
         if (col1Value == "" or col2Value == ""):
             errormessage = "Please enter valid input"
-            return render_template('q1.html',errorMessage=errormessage)
+            return render_template('q5.html',errorMessage=errormessage)
         else:
             sql = "SELECT  party_simplified,  ROUND(CAST((sum(candidatevotes) * 100.0 / totalVotes) AS FLOAT), 2) AS [Percentage] FROM [dbo].[presidentialelect] WHERE year = " + col1Value + " AND state_po in ('" + col2Value + "') GROUP by party_simplified ,totalVotes"
             cursor.execute(sql)
@@ -242,7 +243,7 @@ def q5():
 
             if(len(df) <= 0):
                 errormessage = "No results found"
-                return render_template('q1.html',errorMessage=errormessage)
+                return render_template('q5.html',errorMessage=errormessage)
             else:
                 d = [
                     dict([
